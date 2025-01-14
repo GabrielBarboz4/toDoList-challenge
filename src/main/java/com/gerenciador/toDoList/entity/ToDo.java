@@ -1,35 +1,91 @@
 package com.gerenciador.toDoList.entity;
 
-import com.gerenciador.toDoList.dto.ToDoDTO;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.lang.NonNull;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "to_do")
+@Table(name = "tasks")
 @Getter
 @Setter
 public class ToDo {
 
     @Id @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotBlank
     private String taskName;
     private String description;
     private boolean status;
-    private LocalDate createdIn;
-    private LocalDate finishedIn;
+    private LocalDateTime createdIn;
+    private LocalDateTime finishedIn;
     private int priority;
 
-    public ToDo ( ToDoDTO input ) {
-        this.taskName = input.taskName();
-        this.description = input.description();
-        this.status = input.status();
-        this.createdIn = input.createdIn();
-        this.finishedIn = input.finishedIn();
-        this.priority = input.priority();
+    public ToDo () {}
+
+    public ToDo(@NotBlank String taskName, String description, boolean status, int priority) {
+        this.taskName = taskName;
+        this.description = description;
+        this.status = status;
+        this.priority = priority;
+    }
+
+    public LocalDateTime getCreatedIn() {
+        return createdIn;
+    }
+
+    public void setCreatedIn(LocalDateTime createdIn) {
+        this.createdIn = createdIn;
+    }
+
+    public LocalDateTime getFinishedIn() {
+        return finishedIn;
+    }
+
+    public void setFinishedIn(LocalDateTime finishedIn) {
+        this.finishedIn = finishedIn;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getTaskName() {
+        return taskName;
+    }
+
+    public void setTaskName(String taskName) {
+        this.taskName = taskName;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
     }
 }

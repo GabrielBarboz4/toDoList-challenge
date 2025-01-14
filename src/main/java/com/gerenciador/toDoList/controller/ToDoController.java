@@ -4,6 +4,7 @@ import com.gerenciador.toDoList.dto.ToDoDTO;
 import com.gerenciador.toDoList.entity.ToDo;
 import com.gerenciador.toDoList.service.ToDoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,10 +22,10 @@ public class ToDoController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity <ToDo> registerTodo (@RequestBody ToDoDTO input ) {
+    public ResponseEntity <ToDo> registerTodo ( @RequestBody ToDoDTO input ) {
         ToDo toDo = service.register( input );
 
-        return ResponseEntity.ok(toDo);
+        return ResponseEntity.status(HttpStatus.CREATED).body(toDo);
     }
 
     @GetMapping("/list")
@@ -40,17 +41,32 @@ public class ToDoController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity <Void> deleteToDo (@PathVariable Long id) {
-        service.deleteByToDo(id);
-        return ResponseEntity.noContent().build();
+        try {
+            service.deleteToDoById(id);
+            return ResponseEntity.ok().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity <ToDo> updateToDos (@PathVariable Long id, @RequestBody ToDoDTO input) {
 
         try {
-            service.editToDos( id, input );
-            return ResponseEntity.ok(new ToDo(input));
+            ToDo updatedTasK = service.editToDos( id, input );
+            return ResponseEntity.ok(updatedTasK);
         } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PutMapping("/finished/{id}")
+    public ResponseEntity <ToDo> finishedToDos (@PathVariable Long id) {
+
+        try {
+            ToDo completedTask = service.finishedToDos(id);
+            return ResponseEntity.ok(completedTask);
+        } catch ( RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
     }
